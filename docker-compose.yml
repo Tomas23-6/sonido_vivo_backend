@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: sonidovivo-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: sonido_vivo_db
+      MYSQL_ROOT_PASSWORD: root1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend-api:
+    build: .
+    container_name: sonidovivo-backend
+    restart: always
+    depends_on:
+      - mysql-db
+    environment:
+      SPRING_PROFILES_ACTIVE: mysql
+      DB_HOST: mysql-db
+      DB_PORT: 3306
+      DB_NAME: sonido_vivo_db
+      DB_USER: root
+      DB_PASS: root1234
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql_data:
